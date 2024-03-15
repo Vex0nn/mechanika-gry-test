@@ -1,0 +1,50 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    position: relative;
+    background-color: blue;
+    justify-content: center;
+    align-items: center;
+}
+
+.playingArea {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh; 
+    width: 70vw;
+    border: 0.4vw solid black;
+    background-color: rgb(130, 172, 172);
+}
+
+.player {
+    z-index: 999;
+    width: 1.5vw;
+    height: 1.5vw;
+    background-color: red;
+    border: 0.4vw solid black;
+}
+
+.obstacle {
+    position: absolute;
+    left: 20vw;
+    background-color: cornflowerblue;
+    border: 0.4vw solid black;
+    width: 20vw;
+    height: 25vh;
+}
+
+.wall {
+    position: absolute;
+    right: 20vw;
+    background-color: blueviolet;
+    height: 30vh;
+    width: 10vw;
+    border: 0.4vw solid black;
+}
