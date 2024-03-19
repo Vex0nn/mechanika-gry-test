@@ -7,10 +7,25 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <header>
+        <p class="coins" id="coins">Coins: 0</p>
+        <p class="level" id="level">Level: 1</p>
+        <p class="deaths" id="deaths">Deaths: 0</p>
+    </header>
+    <div class="startingMenu" id="startingMenu">
+        <div class="title" id="title">
+            <p class="titleText" id="titleText">World's Hardest Game: Sequel</p>
+        </div>
+        <div class="button" id="button">
+            <button onclick="startGame();" class="playButton" id="playButton">Play!</button>
+        </div>
+    </div>
     <div class="playingArea" id="playingArea">
         <div class="player" id="player"></div>
         <div class="obstacle" id="obstacle"></div>
         <div class="wall" id="wall"></div>
+        <div class="obstacle enemies" id="enemy"></div>
+        <div class="obstacle enemies" id="enemy2"></div>
     </div>
 
     <script src="main.js"></script>

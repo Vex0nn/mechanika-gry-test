@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Madimi+One&display=swap');
+
 * {
     margin: 0;
     padding: 0;
@@ -8,22 +10,67 @@ body {
     min-height: 100vh;
     display: flex;
     position: relative;
-    background-color: blue;
+    background-color: rgb(133, 184, 190);
     justify-content: center;
+    align-items: center;
+    font-family: "Madimi One", sans-serif;
+    font-style: normal;
+}
+
+.startingMenu {
+    background-color: rgb(68, 66, 70);
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    width: 70vw;
     align-items: center;
 }
 
-.playingArea {
+.title {
+    margin-top: 50px;
+}
+
+.button {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20vh;
+    margin: auto;
+}
+
+.playButton {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    color: rgb(136, 129, 116);
+    background-color: rgb(211, 186, 148);
+    width: 26vw;
+    height: 11vh;
+}
+
+.titleText {
+    font-size: 50px;
+    color: wheat;
+}
+
+.playingArea {
+    display: none;
     justify-content: center;
     align-items: center;
     height: 80vh; 
     width: 70vw;
     border: 0.4vw solid black;
-    background-color: rgb(130, 172, 172);
+    background-image:
+    linear-gradient(45deg, #ccc 25%, transparent 25%), 
+    linear-gradient(135deg, #ccc 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #ccc 75%),
+    linear-gradient(135deg, transparent 75%, #ccc 75%);
+    background-size:4vw 4vw;
+    background-position:0 0, 2vw 0, 2vw -2vw, 0px 2vw;
 }
 
 .player {
+    display: none;
     z-index: 999;
     width: 1.5vw;
     height: 1.5vw;
@@ -31,7 +78,8 @@ body {
     border: 0.4vw solid black;
 }
 
-.obstacle {
+#obstacle {
+    display: none;
     position: absolute;
     left: 20vw;
     background-color: cornflowerblue;
@@ -40,11 +88,67 @@ body {
     height: 25vh;
 }
 
-.wall {
+#wall {
+    display: none;
     position: absolute;
     right: 20vw;
     background-color: blueviolet;
     height: 30vh;
     width: 10vw;
     border: 0.4vw solid black;
+}
+
+header {
+    display: flex;
+    position: absolute;
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+    top: 0px;
+    height: 10vh;
+    width: 100vw;
+    background-color: aquamarine;
+}
+
+#level {
+    font-size: 40px;
+}
+
+#deaths {
+    font-size: 40px;
+}
+
+#coins {
+    font-size: 40px;
+}
+
+.enemies {
+    position: absolute;
+    border-radius: 50%;
+    width: 1.5vw;
+    height: 1.5vw;
+    border: 0.4vw solid black;
+    background-color: blue;
+    bottom: 12%;
+    animation: moveEnemies 6s linear infinite;
+}
+
+#enemy {
+    right: 40%;
+}
+
+#enemy2 {
+    right: 45%;
+}
+
+@keyframes moveEnemies {
+    0% {
+        bottom: 12%;
+    }
+    50% {
+        bottom: 85%;
+    }
+    100% {
+        bottom: 12%;
+    }
 }

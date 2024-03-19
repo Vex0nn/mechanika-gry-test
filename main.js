@@ -1,13 +1,40 @@
 let player = document.getElementById('player');
-let obstacle = document.getElementById('obstacle');
+let obstacles = document.querySelectorAll('.obstacle');
 let wall = document.getElementById('wall');
 let playingArea = document.getElementById('playingArea');
+let startingMenu = document.getElementById('startingMenu');
+let enemy = document.getElementById('enemy');
+let playerPos = player.getBoundingClientRect();
+let wallPos = wall.getBoundingClientRect();
+let obstaclePos = obstacles[0].getBoundingClientRect();
+let playingAreaPos = playingArea.getBoundingClientRect();
+let deathCount = 0;
+let deaths = document.getElementById('deaths');
+let spawnpointX = 0;
+let spawnpointY = 0;
 let positionX = 0;
 let positionY = 0;
-let movingDirection = {up: false, down: false, right: false, left: false}
+let movingDirection = { up: false, down: false, right: false, left: false };
+
+function startGame() {
+    player.style.display = "block";
+    for (let obstacle of obstacles) {
+        obstacle.style.display = "block";
+    }
+    wall.style.display = "block";
+    playingArea.style.display = "flex";
+    startingMenu.style.display = "none";
+}
+
+function addDeath() {
+    if (player.style.display == "block") {
+        deathCount++;
+        deaths.textContent = `Deaths: ${deathCount}`;
+    }
+}
 
 window.addEventListener('keydown', (event) => {
-    switch(event.key) {
+    switch (event.key) {
         case 'w':
         case 'W':
             movingDirection.up = true;
@@ -23,12 +50,12 @@ window.addEventListener('keydown', (event) => {
         case 'd':
         case 'D':
             movingDirection.right = true;
-            break;          
+            break;
     }
-})
+});
 
 window.addEventListener('keyup', (event) => {
-    switch(event.key) {
+    switch (event.key) {
         case 'w':
         case 'W':
             movingDirection.up = false;
@@ -46,37 +73,34 @@ window.addEventListener('keyup', (event) => {
             movingDirection.right = false;
             break;
     }
-})
+});
 
 function movePlayer() {
-    const stepX = 0.15;
-    const stepY = 0.3;
-    let playerPos = player.getBoundingClientRect();
-    let wallPos = wall.getBoundingClientRect();
-
-    if(movingDirection.up) {
+    const stepX = 0.07;
+    const stepY = 0.15;
+    if (movingDirection.up) {
         positionY -= stepY;
     }
-    if(movingDirection.down) {
+    if (movingDirection.down) {
         positionY += stepY;
     }
-    if(movingDirection.right) {
+    if (movingDirection.right) {
         positionX += stepX;
     }
-    if(movingDirection.left) {
+    if (movingDirection.left) {
         positionX -= stepX;
     }
     player.style.transform = `translate(${positionX}svw, ${positionY}svh)`;
-    
-    if(checkCollision()) {
+
+    if (checkCollision()) {
         resetGame();
+        addDeath();
         return;
     }
-    if(checkCollision2()) {
-        resetGame();
-        return;
+    if (checkCollision2()) {
+        bounceIn();
     }
-    if(checkCollision3()) {
+    if (checkCollision3()) {
         bounce();
     }
 
@@ -85,63 +109,45 @@ function movePlayer() {
 
 function checkCollision() {
     let playerPos = player.getBoundingClientRect();
-    let obstaclePos = obstacle.getBoundingClientRect();
-
-    return !(playerPos.right < obstaclePos.left || 
-             playerPos.left > obstaclePos.right || 
-             playerPos.bottom < obstaclePos.top || 
-             playerPos.top > obstaclePos.bottom
-            ); 
+    for (let obstacle of obstacles) {
+        let obstaclePos = obstacle.getBoundingClientRect();
+        if (!(playerPos.right < obstaclePos.left ||
+            playerPos.left > obstaclePos.right ||
+            playerPos.bottom < obstaclePos.top ||
+            playerPos.top > obstaclePos.bottom)) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function checkCollision2() {
     let playerPos = player.getBoundingClientRect();
     let playingAreaPos = playingArea.getBoundingClientRect();
-
-    return (playerPos.left < playingAreaPos.left || 
-             playerPos.right > playingAreaPos.right || 
-             playerPos.top < playingAreaPos.top || 
-             playerPos.bottom > playingAreaPos.bottom
-            ); 
+    return (playerPos.left < playingAreaPos.left ||
+        playerPos.right > playingAreaPos.right ||
+        playerPos.top < playingAreaPos.top ||
+        playerPos.bottom > playingAreaPos.bottom
+    );
 }
 
 function checkCollision3() {
     let playerPos = player.getBoundingClientRect();
     let wallPos = wall.getBoundingClientRect();
-
-    return !(playerPos.x + playerPos.width < wallPos.x || 
-             wallPos.x + wallPos.width < playerPos.x || 
-             playerPos.y + playerPos.height < wallPos.y || 
-             wallPos.y + wallPos.height < playerPos.y
-            );
+    return !(playerPos.x + playerPos.width < wallPos.x ||
+        wallPos.x + wallPos.width < playerPos.x ||
+        playerPos.y + playerPos.height < wallPos.y ||
+        wallPos.y + wallPos.height < playerPos.y
+    );
 }
 
 function resetGame() {
     positionX = 0;
     positionY = 0;
-    player.style.transform = `translate(${positionX}vw, ${positionY}vh)`;
+    player.style.transform = `translate(${positionX}vw, ${positionY}vw)`;
     setTimeout(() => {
         movePlayer();
     }, 100);
-}
-
-movePlayer();
-
-function detectMob() {
-    const toMatch = [
-        /Android/i,
-        /webOS/i,
-        /iPhone/i,
-        /iPad/i,
-        /iPod/i,
-        /BlackBerry/i,
-        /Windows Phone/i
-    ];
-    
-    return toMatch.some((toMatchItem) => {
-        alert('The mobile version of the game is in progress, please use a desktop!');
-        return navigator.userAgent.match(toMatchItem);
-    });
 }
 
 function bounce() {
@@ -149,16 +155,37 @@ function bounce() {
     const stepY = 0.3;
     let playerPos = player.getBoundingClientRect();
     let wallPos = wall.getBoundingClientRect();
-    if (playerPos.x + playerPos.width > wallPos.x && playerPos.x + playerPos.width < wallPos.x + 2) {
+    if (playerPos.x + playerPos.width > wallPos.x && playerPos.x + playerPos.width < wallPos.x + 5) {
         positionX -= stepX;
-    } 
-    if (wallPos.x + wallPos.width > playerPos.x && wallPos.x + wallPos.width < playerPos.x + 2) {
+    }
+    if (wallPos.x + wallPos.width > playerPos.x && wallPos.x + wallPos.width < playerPos.x + 5) {
         positionX += stepX;
     }
-    if (playerPos.y + playerPos.height > wallPos.y && playerPos.y + playerPos.height < wallPos.y + 2) {
+    if (playerPos.y + playerPos.height > wallPos.y && playerPos.y + playerPos.height < wallPos.y + 5) {
         positionY -= stepY;
     }
-    if (wallPos.y + wallPos.height > playerPos.y && wallPos.y + wallPos.height < playerPos.y + 2) {
+    if (wallPos.y + wallPos.height > playerPos.y && wallPos.y + wallPos.height < playerPos.y + 5) {
         positionY += stepY;
     }
 }
+
+function bounceIn() {
+    const stepX = 0.15;
+    const stepY = 0.3;
+    let playerPos = player.getBoundingClientRect();
+    let playingAreaPos = playingArea.getBoundingClientRect();
+    if (playerPos.right > playingAreaPos.right) {
+        positionX -= stepX;
+    }
+    if (playerPos.left < playingAreaPos.left) {
+        positionX += stepX;
+    }
+    if (playerPos.top < playingAreaPos.top) {
+        positionY += stepY;
+    }
+    if (playerPos.bottom > playingAreaPos.bottom) {
+        positionY -= stepY;
+    }
+}
+
+movePlayer();
